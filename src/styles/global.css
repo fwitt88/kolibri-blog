@@ -439,5 +439,5 @@ a:hover { color: var(--carbon); }
   border-radius: 50%;
   object-fit: cover;
   object-position: center top;
-  filter: grayscale(100%) sepia(40%) hue-rotate(115deg) saturate(0.7) brightness(0.95);
+  filter: grayscale(100%);
 }
