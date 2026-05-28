@@ -2,7 +2,7 @@
 title: "¿Por qué mi clínica tiene ingresos pero poca utilidad?"
 description: "Muchas clínicas dentales facturan bien pero terminan el mes con poco dinero disponible. La causa casi siempre es la misma: no saben cuánto les cuesta realmente cada tratamiento."
 pubDate: 2026-05-28
-author: Daniela
+author: Dany
 readingTime: 6
 ---
 
