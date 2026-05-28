@@ -12,7 +12,7 @@ const { title, description, pubDate, author, readingTime } = post.data;
 const authorData = {
   Dany: {
     fullName: 'Dra. Daniela Tapia',
-    bio: 'Cirujano-dentista con +10 años de experiencia clínica. Co-fundadora de Kolibri Dental.',
+    bio: 'Cirujano-dentista y Co-fundadora de Kolibri Dental.',
     initials: 'DT',
   },
   Kolibri: {
@@ -42,7 +42,7 @@ const postUrl = `${siteUrl}/${post.slug}/`;
     "description": description,
     "datePublished": pubDate.toISOString(),
     "author": {
-      "@type": author === 'Dany' ? 'Person' : 'Organization',
+      "@type": author === 'Dra. Daniela Tapia' ? 'Person' : 'Organization',
       "name": a.fullName,
     },
     "publisher": {
