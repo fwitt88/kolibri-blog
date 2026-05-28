@@ -1,0 +1,89 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, author, readingTime } = post.data;
+
+const authorData = {
+  Dany: {
+    fullName: 'Dra. Daniela Tapia',
+    bio: 'Cirujano-dentista con +10 años de experiencia clínica. Co-fundadora de Kolibri Dental.',
+    initials: 'DT',
+  },
+  Kolibri: {
+    fullName: 'Equipo Kolibri Dental',
+    bio: 'Análisis y recursos sobre gestión financiera para clínicas dentales en Chile.',
+    initials: 'K',
+  },
+};
+
+const a = authorData[author];
+
+const formattedDate = pubDate.toLocaleDateString('es-CL', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+const siteUrl = 'https://blog.getkolibri.app';
+const postUrl = `${siteUrl}/${post.slug}/`;
+---
+
+<BaseLayout title={title} description={description}>
+
+  <!-- Article structured data (GEO + SEO) -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": title,
+    "description": description,
+    "datePublished": pubDate.toISOString(),
+    "author": {
+      "@type": author === 'Dany' ? 'Person' : 'Organization',
+      "name": a.fullName,
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Kolibri Dental",
+      "url": "https://getkolibri.app"
+    },
+    "mainEntityOfPage": postUrl,
+    "inLanguage": "es-CL"
+  })} />
+
+  <a href="/" class="back-link">← Volver al blog</a>
+
+  <article class="article-wrap">
+    <header class="article-header">
+      <div class="article-meta">
+        <span class={`author-badge ${author.toLowerCase()}`}>{a.fullName}</span>
+        <span class="article-date">{formattedDate}</span>
+        {readingTime && <span class="reading-time">{readingTime} min de lectura</span>}
+      </div>
+      <h1>{title}</h1>
+      <p class="article-description">{description}</p>
+    </header>
+
+    <div class="article-body">
+      <slot />
+    </div>
+
+    <div class="author-box">
+      <div class="author-avatar">{a.initials}</div>
+      <div class="author-info">
+        <h3>{a.fullName}</h3>
+        <p>{a.bio}</p>
+      </div>
+    </div>
+  </article>
+
+  <div class="cta-block container">
+    <h2>¿Tu clínica también pierde utilidad sin saber por qué?</h2>
+    <p>Kolibri Dental calcula automáticamente el costo real de cada tratamiento. Sin planillas, sin suposiciones.</p>
+    <a href="https://getkolibri.app" class="cta-btn">Prueba Kolibri gratis →</a>
+  </div>
+
+</BaseLayout>

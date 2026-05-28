@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const { title, description = 'Recursos sobre gestión y costos para clínicas dentales en Chile.', ogImage } = Astro.props;
+const siteUrl = 'https://blog.getkolibri.app';
+const fullTitle = title.includes('Kolibri') ? title : `${title} | Kolibri Dental`;
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={Astro.url.href} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={Astro.url.href} />
+  {ogImage && <meta property="og:image" content={`${siteUrl}${ogImage}`} />}
+
+  <!-- Structured data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Kolibri Dental",
+    "url": "https://getkolibri.app",
+    "logo": "https://getkolibri.app/favicon.svg",
+    "description": "Software de gestión y control de costos para clínicas dentales en Chile."
+  }
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="inner">
+      <a href="/" class="site-logo">
+        <span class="wordmark">Kolibri Dental</span>
+        <span class="tag">Blog</span>
+      </a>
+      <a href="https://getkolibri.app" class="header-cta">Probar gratis →</a>
+    </div>
+  </header>
+
+  <slot />
+
+  <footer class="site-footer">
+    <div class="container">
+      © {new Date().getFullYear()} Kolibri Dental · <a href="https://getkolibri.app">getkolibri.app</a>
+    </div>
+  </footer>
+
+</body>
+</html>

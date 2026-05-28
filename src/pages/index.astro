@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<BaseLayout
+  title="Kolibri Dental — Blog"
+  description="Recursos prácticos sobre gestión financiera, control de costos e inventario para clínicas dentales en Chile."
+>
+
+  <!-- Structured data: Blog -->
+  <script type="application/ld+json">{JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "Kolibri Dental Blog",
+    "description": "Recursos sobre gestión y costos para clínicas dentales en Chile.",
+    "url": "https://blog.getkolibri.app",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Kolibri Dental",
+      "url": "https://getkolibri.app"
+    },
+    "inLanguage": "es-CL"
+  })}</script>
+
+  <section class="hero container">
+    <p class="hero-eyebrow">Kolibri Dental · Blog</p>
+    <h1>Gestión financiera<br/>para tu clínica dental</h1>
+    <p>Recursos prácticos sobre costos, inventario y rentabilidad — escritos por dentistas y especialistas en gestión clínica.</p>
+  </section>
+
+  <section class="posts-section container">
+    <p class="posts-label">Artículos recientes</p>
+    <div class="posts-grid">
+      {posts.map(post => (
+        <a href={`/${post.slug}/`} class="post-card">
+          <div class="post-card-meta">
+            <span class={`author-badge ${post.data.author.toLowerCase()}`}>
+              {post.data.author === 'Dany' ? 'Dra. Tapia' : 'Kolibri'}
+            </span>
+            <span class="post-card-date">{formatDate(post.data.pubDate)}</span>
+          </div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+          <div class="post-card-footer">
+            Leer artículo <span>→</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+</BaseLayout>
