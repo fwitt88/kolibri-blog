@@ -44,7 +44,7 @@ Juntar ambos conceptos lleva a una pregunta concreta: ¿cuánto tienes que factu
 
 Ese número se llama punto de equilibrio, o breakeven. Es el umbral mínimo a partir del cual la clínica deja de perder dinero.
 
-![Punto de equilibrio en una clínica dental](/breakeven-chart.svg)
+![Punto de equilibrio en una clínica dental](/images/blog/breakeven-chart.png)
 
 Si tus costos fijos son $1.500.000 CLP al mes, y tu margen promedio por tratamiento, después de materiales y laboratorio, es de $25.000 CLP, necesitas realizar al menos **60 tratamientos al mes** solo para cubrir los fijos. Todo lo que viene después es utilidad real.
 
