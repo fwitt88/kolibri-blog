@@ -459,3 +459,63 @@ a:hover { color: var(--carbon); }
   text-align: center;
   margin-top: 0.5rem;
 }
+
+/* ── Article Tables ───────────────────────────────────── */
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.75rem 0;
+  font-size: 0.9rem;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+ 
+.article-body thead {
+  background: var(--verde-pale);
+}
+ 
+.article-body th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--carbon);
+  font-size: 0.82rem;
+  border-bottom: 1px solid var(--border);
+}
+ 
+.article-body td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--carbon-soft);
+}
+ 
+.article-body tbody tr:last-child td {
+  border-bottom: none;
+}
+ 
+.article-body tbody tr:nth-child(even) {
+  background: var(--crema);
+}
+ 
+/* Right-align numeric columns (all but first) */
+.article-body td:not(:first-child),
+.article-body th:not(:first-child) {
+  text-align: right;
+}
+ 
+.article-body td:first-child {
+  font-weight: 500;
+  color: var(--carbon);
+}
+ 
+@media (max-width: 640px) {
+  .article-body table {
+    font-size: 0.78rem;
+  }
+  .article-body th,
+  .article-body td {
+    padding: 0.5rem 0.6rem;
+  }
+}
