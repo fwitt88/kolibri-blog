@@ -50,7 +50,7 @@ const postUrl = `${siteUrl}/${post.slug}/`;
     "description": description,
     "datePublished": pubDate.toISOString(),
     "author": {
-      "@type": author === 'Dra. Daniela Tapia' ? 'Person' : 'Organization',
+      "@type": author === 'Dany' ? 'Person' : 'Organization',
       "name": a.fullName,
     },
     "publisher": {
@@ -81,9 +81,9 @@ const postUrl = `${siteUrl}/${post.slug}/`;
 
     <div class="author-box">
       {a.image
-  ? <img src={a.image} alt={a.fullName} class="author-avatar-img" />
-  : <div class="author-avatar">{a.initials}</div>
-}
+        ? <img src={a.image} alt={a.fullName} class="author-avatar-img" />
+        : <div class="author-avatar">{a.initials}</div>
+      }
       <div class="author-info">
         <h3>{a.fullName}</h3>
         <p>{a.bio}</p>
@@ -93,38 +93,38 @@ const postUrl = `${siteUrl}/${post.slug}/`;
 
   <div class="cta-block container">
     <h2>¿Tu clínica también pierde utilidad sin saber por qué?</h2>
-<p>Kolibri Dental calcula automáticamente el costo real de cada tratamiento. Sin planillas, sin suposiciones.</p>
-<a href="https://getkolibri.app" class="cta-btn">Conocer Kolibri →</a>
-  </div>
-<!--
-  SECCIÓN DE COMENTARIOS — Supabase (sin login externo)
-  =======================================================
-  Reemplaza completamente el bloque anterior en BlogPost.astro
-  por este. Ya tiene tu SUPABASE_URL y ANON_KEY si los habías
-  puesto antes — revisa que sigan correctos abajo.
--->
-
-<div class="comments-section container" id="comments-root" data-slug={post.slug}>
-  <h3 class="comments-title">Comentarios</h3>
-
-  <div id="comments-list" class="comments-list">
-    <p class="comments-loading">Cargando comentarios...</p>
+    <p>Kolibri Dental calcula automáticamente el costo real de cada tratamiento. Sin planillas, sin suposiciones.</p>
+    <a href="https://getkolibri.app" class="cta-btn">Conocer Kolibri →</a>
   </div>
 
-  <form id="comment-form" class="comment-form">
-    <div class="comment-form-row">
-      <input type="text" id="comment-name" placeholder="Tu nombre" required maxlength="100" />
-      <input type="email" id="comment-email" placeholder="Email (opcional, no se publica)" />
+  <!-- ═══════════════════════════════════════════════════════
+       SECCIÓN DE COMENTARIOS — Supabase (sin login externo)
+       ═══════════════════════════════════════════════════════ -->
+
+  <div class="comments-section container" id="comments-root" data-slug={post.slug}>
+    <h3 class="comments-title">Comentarios</h3>
+
+    <div id="comments-list" class="comments-list">
+      <p class="comments-loading">Cargando comentarios...</p>
     </div>
-    <textarea id="comment-text" placeholder="Escribe tu comentario..." required maxlength="2000" rows="4"></textarea>
-    <input type="text" id="comment-website" name="website" class="honeypot" tabindex="-1" autocomplete="off" />
-    <button type="submit" id="comment-submit">Enviar comentario</button>
-    <p id="comment-status" class="comment-status"></p>
-  </form>
-  <p class="comments-note">Los comentarios se revisan antes de publicarse.</p>
-</div>
+
+    <form id="comment-form" class="comment-form">
+      <div class="comment-form-row">
+        <input type="text" id="comment-name" placeholder="Tu nombre" required maxlength="100" />
+        <input type="email" id="comment-email" placeholder="Email (opcional, no se publica)" />
+      </div>
+      <textarea id="comment-text" placeholder="Escribe tu comentario..." required maxlength="2000" rows="4"></textarea>
+      <input type="text" id="comment-website" name="website" class="honeypot" tabindex="-1" autocomplete="off" />
+      <button type="submit" id="comment-submit">Enviar comentario</button>
+      <p id="comment-status" class="comment-status"></p>
+    </form>
+    <p class="comments-note">Los comentarios se revisan antes de publicarse.</p>
+  </div>
+
+</BaseLayout>
 
 <style>
+  /* ── Comments section wrapper (static, in template) ── */
   .comments-section {
     max-width: 720px;
     margin: 3rem auto 0;
@@ -139,13 +139,20 @@ const postUrl = `${siteUrl}/${post.slug}/`;
     color: var(--carbon);
   }
   .comments-list { margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.75rem; }
-  .comments-loading, .comments-empty {
+  .comments-loading {
     font-size: 0.88rem;
     color: var(--carbon-soft);
   }
 
-  /* ── Comment item ── */
-  .comment-item {
+  /* ── Dynamically injected via JS: must be :global() ──
+     Astro's scoped CSS only applies to markup present at build time.
+     These nodes are created client-side with innerHTML, so without
+     :global() these rules are silently dropped. ── */
+  :global(.comments-empty) {
+    font-size: 0.88rem;
+    color: var(--carbon-soft);
+  }
+  :global(.comment-item) {
     display: flex;
     gap: 0.75rem;
     background: white;
@@ -153,7 +160,7 @@ const postUrl = `${siteUrl}/${post.slug}/`;
     border-radius: 10px;
     padding: 1rem 1.1rem;
   }
-  .comment-avatar {
+  :global(.comment-avatar) {
     flex-shrink: 0;
     width: 34px;
     height: 34px;
@@ -167,36 +174,36 @@ const postUrl = `${siteUrl}/${post.slug}/`;
     align-items: center;
     justify-content: center;
   }
-  .comment-content { flex: 1; min-width: 0; }
-  .comment-header {
+  :global(.comment-content) { flex: 1; min-width: 0; }
+  :global(.comment-header) {
     display: flex;
     align-items: baseline;
     gap: 0.55rem;
     margin-bottom: 0.3rem;
     flex-wrap: wrap;
   }
-  .comment-author {
+  :global(.comment-author) {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--carbon);
   }
-  .comment-date {
+  :global(.comment-date) {
     font-size: 0.74rem;
     color: var(--carbon-soft);
     font-weight: 400;
   }
-  .comment-date::before {
+  :global(.comment-date)::before {
     content: '·';
     margin-right: 0.55rem;
     color: var(--border);
   }
-  .comment-body {
+  :global(.comment-body) {
     font-size: 0.88rem;
     color: var(--carbon-soft);
     line-height: 1.6;
   }
 
-  /* ── Form ── */
+  /* ── Form (static, in template) ── */
   .comment-form {
     background: white;
     border: 1px solid var(--border);
@@ -366,4 +373,3 @@ const postUrl = `${siteUrl}/${post.slug}/`;
 
   loadComments();
 </script>
-</BaseLayout>
