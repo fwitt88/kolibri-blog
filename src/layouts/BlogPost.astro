@@ -96,5 +96,37 @@ const postUrl = `${siteUrl}/${post.slug}/`;
 <p>Kolibri Dental calcula automáticamente el costo real de cada tratamiento. Sin planillas, sin suposiciones.</p>
 <a href="https://getkolibri.app" class="cta-btn">Conocer Kolibri →</a>
   </div>
-
+<!--
+  GISCUS COMMENTS — Integración final
+  ====================================
+  Dónde pegar este bloque:
+  En src/layouts/BlogPost.astro, justo ANTES del cierre </BaseLayout>
+  (después del <div class="cta-block">).
+-->
+ 
+<div class="comments-section container" style="max-width: 720px; margin: 3rem auto 0;">
+  <script
+    src="https://giscus.app/client.js"
+    data-repo="fwitt88/kolibri-blog"
+    data-repo-id="R_kgDOSqO8Iw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOSqO8I84DEmFl"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="light"
+    data-lang="es"
+    crossorigin="anonymous"
+    async>
+  </script>
+</div>
+ 
+<style>
+  .comments-section {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
 </BaseLayout>
