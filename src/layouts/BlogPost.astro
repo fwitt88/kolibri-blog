@@ -97,36 +97,246 @@ const postUrl = `${siteUrl}/${post.slug}/`;
 <a href="https://getkolibri.app" class="cta-btn">Conocer Kolibri →</a>
   </div>
 <!--
-  GISCUS COMMENTS — Integración final
-  ====================================
+  SECCIÓN DE COMENTARIOS — Supabase (sin login externo)
+  =======================================================
+  Antes de usar:
+  1. Ejecuta blog_comments_migration.sql en el SQL Editor de Supabase
+     (proyecto Kolibri Dental, fxpocaaextezoirfkayh).
+  2. Reemplaza SUPABASE_URL y SUPABASE_ANON_KEY abajo con los valores
+     reales de tu proyecto (Settings → API en el dashboard de Supabase).
+     Es seguro exponer la anon key en el frontend — está diseñada para eso,
+     y las policies de RLS controlan lo que se puede hacer con ella.
+ 
   Dónde pegar este bloque:
   En src/layouts/BlogPost.astro, justo ANTES del cierre </BaseLayout>
-  (después del <div class="cta-block">).
+  (después del <div class="cta-block">), reemplazando el bloque de Giscus
+  si ya lo habías puesto.
 -->
  
-<div class="comments-section container" style="max-width: 720px; margin: 3rem auto 0;">
-  <script
-    src="https://giscus.app/client.js"
-    data-repo="fwitt88/kolibri-blog"
-    data-repo-id="R_kgDOSqO8Iw"
-    data-category="Announcements"
-    data-category-id="DIC_kwDOSqO8I84DEmFl"
-    data-mapping="pathname"
-    data-strict="0"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="light"
-    data-lang="es"
-    crossorigin="anonymous"
-    async>
-  </script>
+<div class="comments-section container" id="comments-root" data-slug={post.slug}>
+  <h3 class="comments-title">Comentarios</h3>
+ 
+  <div id="comments-list" class="comments-list">
+    <p class="comments-loading">Cargando comentarios...</p>
+  </div>
+ 
+  <form id="comment-form" class="comment-form">
+    <div class="comment-form-row">
+      <input type="text" id="comment-name" placeholder="Tu nombre" required maxlength="100" />
+      <input type="email" id="comment-email" placeholder="Email (opcional, no se publica)" />
+    </div>
+    <textarea id="comment-text" placeholder="Escribe tu comentario..." required maxlength="2000" rows="4"></textarea>
+    <!-- Honeypot anti-spam: campo oculto que los bots suelen rellenar -->
+    <input type="text" id="comment-website" name="website" class="honeypot" tabindex="-1" autocomplete="off" />
+    <button type="submit" id="comment-submit">Enviar comentario</button>
+    <p id="comment-status" class="comment-status"></p>
+  </form>
+  <p class="comments-note">Los comentarios se revisan antes de publicarse.</p>
 </div>
  
 <style>
   .comments-section {
+    max-width: 720px;
+    margin: 3rem auto 0;
     padding-top: 2rem;
     border-top: 1px solid var(--border);
   }
+  .comments-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    color: var(--carbon);
+  }
+  .comments-list { margin-bottom: 2rem; }
+  .comments-loading, .comments-empty {
+    font-size: 0.88rem;
+    color: var(--carbon-soft);
+  }
+  .comment-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .comment-item .comment-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--carbon);
+    margin-bottom: 0.25rem;
+  }
+  .comment-item .comment-date {
+    font-size: 0.75rem;
+    color: var(--carbon-soft);
+    font-weight: 400;
+    margin-left: 0.5rem;
+  }
+  .comment-item .comment-body {
+    font-size: 0.9rem;
+    color: var(--carbon-soft);
+    line-height: 1.6;
+  }
+  .comment-form {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .comment-form-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .comment-form input[type="text"],
+  .comment-form input[type="email"],
+  .comment-form textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    background: var(--crema);
+    color: var(--carbon);
+  }
+  .comment-form textarea { margin-bottom: 0.75rem; resize: vertical; }
+  .comment-form input:focus, .comment-form textarea:focus {
+    outline: none;
+    border-color: var(--verde);
+  }
+  .honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  #comment-submit {
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  #comment-submit:hover { background: var(--verde-light); }
+  #comment-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  .comment-status {
+    font-size: 0.82rem;
+    margin-top: 0.6rem;
+    min-height: 1.2em;
+  }
+  .comment-status.success { color: var(--verde); }
+  .comment-status.error { color: #c0503f; }
+  .comments-note {
+    font-size: 0.78rem;
+    color: var(--carbon-soft);
+    margin-top: 0.75rem;
+  }
+ 
+  @media (max-width: 640px) {
+    .comment-form-row { flex-direction: column; }
+  }
 </style>
+ 
+<script>
+  const SUPABASE_URL = 'https://fxpocaaextezoirfkayh.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4cG9jYWFleHRlem9pcmZrYXloIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5MTgwNTIsImV4cCI6MjA4MzQ5NDA1Mn0.rr2WDj-msf8QoAwHx4sQf8EO9api4UZv-uRPW6HXIWk';
+ 
+  const root = document.getElementById('comments-root');
+  const slug = root?.getAttribute('data-slug') || '';
+  const listEl = document.getElementById('comments-list');
+  const form = document.getElementById('comment-form') as HTMLFormElement;
+  const statusEl = document.getElementById('comment-status');
+  const submitBtn = document.getElementById('comment-submit') as HTMLButtonElement;
+ 
+  function escapeHtml(str: string) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+ 
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString('es-CL', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+ 
+  async function loadComments() {
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/blog_comments?post_slug=eq.${encodeURIComponent(slug)}&approved=eq.true&order=created_at.desc`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        }
+      );
+      const comments = await res.json();
+ 
+      if (!Array.isArray(comments) || comments.length === 0) {
+        listEl!.innerHTML = '<p class="comments-empty">Aún no hay comentarios. Sé el primero en escribir uno.</p>';
+        return;
+      }
+ 
+      listEl!.innerHTML = comments
+        .map(
+          (c: any) => `
+        <div class="comment-item">
+          <div class="comment-author">${escapeHtml(c.author_name)}<span class="comment-date">${formatDate(c.created_at)}</span></div>
+          <div class="comment-body">${escapeHtml(c.comment_text)}</div>
+        </div>
+      `
+        )
+        .join('');
+    } catch (err) {
+      listEl!.innerHTML = '<p class="comments-empty">No se pudieron cargar los comentarios.</p>';
+    }
+  }
+ 
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+ 
+    const honeypot = (document.getElementById('comment-website') as HTMLInputElement).value;
+    if (honeypot) return; // bot detectado, no hacer nada
+ 
+    const name = (document.getElementById('comment-name') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('comment-email') as HTMLInputElement).value.trim();
+    const text = (document.getElementById('comment-text') as HTMLTextAreaElement).value.trim();
+ 
+    if (!name || !text) return;
+ 
+    submitBtn.disabled = true;
+    statusEl!.textContent = '';
+    statusEl!.className = 'comment-status';
+ 
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/blog_comments`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          post_slug: slug,
+          author_name: name,
+          author_email: email || null,
+          comment_text: text,
+          approved: false,
+        }),
+      });
+ 
+      if (!res.ok) throw new Error('failed');
+ 
+      statusEl!.textContent = 'Gracias, tu comentario fue enviado y se publicará después de ser revisado.';
+      statusEl!.className = 'comment-status success';
+      form.reset();
+    } catch (err) {
+      statusEl!.textContent = 'Hubo un problema al enviar tu comentario. Intenta de nuevo.';
+      statusEl!.className = 'comment-status error';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+ 
+  loadComments();
+</script>
 </BaseLayout>
