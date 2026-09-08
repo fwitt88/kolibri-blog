@@ -1,7 +1,7 @@
 ---
 title: "CK11N: la transacción de SAP que explica cómo debería costearse un tratamiento dental"
 description: "En el mundo de la manufactura, cada producto tiene una receta con costos calculados antes de fabricarlo. La misma estructura, sin la rigidez de fábrica, aplica a un tratamiento dental."
-pubDate: 2026-09-15
+pubDate: 2026-09-08
 author: Florian
 readingTime: 6
 ---
