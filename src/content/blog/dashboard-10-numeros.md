@@ -38,7 +38,7 @@ El último indicador, **Capital en Inventario**, responde una pregunta que casi 
 
 ---
 
-![Dashboard de Kolibri Dental](/images/blog/dashboard-screenshot.png)
+![Dashboard de Kolibri Dental](images/blog/dashboard-screenshot.png)
 ## Un mes que muestra el punto exacto de este dashboard
 
 En el ejemplo de la imagen, la utilidad de septiembre aparece en rojo, negativa, un 121% por debajo de agosto. Los ingresos bajaron, los pacientes nuevos bajaron, y los pagos pendientes subieron a más de cuatro millones de pesos.
