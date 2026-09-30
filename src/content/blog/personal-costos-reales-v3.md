@@ -1,7 +1,7 @@
 ---
 title: "Por qué el costo de personal de tu clínica probablemente está mal calculado"
 description: "Es, en la mayoría de los casos, el bloque de costo más grande de toda la clínica. Y sin embargo, es el que menos atención recibe, y el que más fácil se pierde de vista con el tiempo."
-pubDate: 2026-09-29
+pubDate: 2026-09-30
 author: Florian
 readingTime: 5
 ---
